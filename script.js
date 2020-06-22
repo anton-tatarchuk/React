@@ -13,8 +13,7 @@ const resSpread = Math.max(...arr, 10, ...arr2, 7);
 
 const shallowCopy = [...arr, ...arr2, 41];
 
-
-/*============================= Destructuring  ==================================*/
+/*============================= Destructuring  Ojb==================================*/
 const person = {
   // firstName: 'Peter',
   // lastName : 'Smith',
@@ -29,28 +28,133 @@ const person = {
 // const lastName = person.lastName;
 
 // const { firstName, lastName } = person;
-const { name: {first: firstName, last: lastName} } = person;
 
-const { permissions : { role = 'user'} = {} } = person; // default value
+const {
+  name: { first: firstName, last: lastName },
+} = person;
+
+const { permissions: { role = "user" } = {} } = person; // default value
+
 // если нет обьекта permissions по умолчанию пустой {}, role = 'user'
 
-function connnect({
-    host = 'localhost',
-    port = 1241,
-    user = 'guest'} = {}) { // установка обьекта по умолчанию
-        console.log(`user: ${user}; port: ${port}; host: ${host}`);
+function connnect({ host = "localhost", port = 1241, user = "guest" } = {}) {
+  // установка обьекта по умолчанию
+  console.log(`user: ${user}; port: ${port}; host: ${host}`);
 }
 // connnect({ port: 1111 });
 //connnect(); // ошибка если нет обьекта по умолчанию
 
 const dict = {
-    duck: 'quack',
-    dog: 'wuff',
-    mouse: 'squeak'
+  duck: "quack",
+  dog: "wuff",
+  mouse: "squeak",
+  hamster: "squeak",
+};
+
+/* const {duck, ...otherAnimals} = dict;
+console.log(duck) // quack
+console.log(otherAnimals) // {dog: "wuff", mouse: "squeak"} */
+
+/*============================= Destructuring  Arrays==================================*/
+
+const fib = [1, 2, 6, 3, 5, 8, 13];
+// const [, a, b] = fib;
+// console.log(a,b) // 2 6
+
+const line = [[10, 17],[14, 7]];
+const [[p1x, p1y], [p2x, p2y]] = line;
+// console.log(p1x, p1y, p2x, p2y);
+
+const people = ['chris', 'sandra'];
+
+const [a,...others] = people;
+
+// console.log(a, others);
+
+const distRes = Object.entries(dict)
+            .filter(([, value]) => value === 'squeak')
+            .map(([key]) => key);
+// console.log(res)
+
+const shape = {
+  type: 'segment',
+  coordinates: {
+    start: [10, 15],
+    end: [17, 15]
+  }
+};
+
+const { coordinates: {
+  start: [startX, startY], 
+  end: [endX, endY]} 
+} = shape;
+
+// console.log(startX, startY, endX, endY)
+
+/* ================= Template Literals (Шаблонные строки) ================ */
+
+const html = `
+  <ul>
+    <li>One ${startX}</li>
+    <li>Two ${endY}</li>
+  </ul>
+`;
+
+
+/* ============================== Objects =============================== */
+
+const x = 10;
+const y = 30;
+
+const p = {
+  x, 
+  y,
+  draw(ctx) {
+    //
+  }
 }
 
-const {duck, ...otherAnimals} = dict;
-console.log(duck) // quack
-console.log(otherAnimals) // {dog: "wuff", mouse: "squeak"}
+const prefix = '_bla_';
+
+const data = {
+  [`${prefix}name`]: "Bob"
+}
+
+const defaults = {
+  host : 'localhost',
+  dbName: 'blog',
+  user: 'admin'
+}
+
+const opts = {
+  user: 'john',
+  password: 'utopia'
+}
+
+// Object.assign(defaults, opts); // Rewrite defaults 
+const result = Object.assign({}, defaults, opts);
 
 
+const person1 = {
+  name: 'Bob',
+  friends : ['Mark', 'Jacob']
+};
+
+const shallowCopyPers1 = Object.assign({}, person1);
+person1.friends.push('Jora')
+
+// console.log(shallowCopyPers1);
+
+/* ======================= Spread Operator for objects ======================= */
+const port = '8080'
+
+const spreadOpts = {
+  ...defaults, 
+  ...opts, 
+  port,
+  connect(){
+    //
+  }
+};
+
+console.log(spreadOpts);
