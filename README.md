@@ -85,21 +85,23 @@ const elements = todos.map((item) => {
 
 ```javascript
 <li key={item.id}>
-    <TodoListItem {...item}/>
-</li>;
+  <TodoListItem {...item} />
+</li>
 ```
-Каждый раз когда React рендерит приложение он пытается определить какие именно элементы изменились в DOM дереве и обновить только их. 
+
+Каждый раз когда React рендерит приложение он пытается определить какие именно элементы изменились в DOM дереве и обновить только их.
 React старается минимизировать работу с DOM элементами
 
-- Каждому JSX элементу в массиве нужно уникальное свойство key 
+- Каждому JSX элементу в массиве нужно уникальное свойство key
 - React использует key чтобы эффективно сравнивать элементы при обновлении
 - Не стоит делать ключи из индексов массива - падает производительность будет заменять элементы по индексу
 
-## P3.33 Структура React проекта 
+## P3.33 Структура React проекта
 
 - Если в папке есть `index.js` , то он импортируется по умолчанию
+
 ```javascript
-import App from './components/app' // будет искать index.js в папке /app
+import App from "./components/app"; // будет искать index.js в папке /app
 ```
 
 # P4 Состояние компонентов и обработка событий
@@ -108,5 +110,49 @@ import App from './components/app' // будет искать index.js в пап
 
 - Классы используются, когда нужно хранить состояние
 - Классы насделуют `React.Component`
-- Метод `render()` возвращает этумент 
+- Метод `render()` возвращает этумент
 - `props` доступны через `this.props`
+
+## P4.35 Обработка событий
+
+- Убедится что `this` сохранит правильно значение внутри функции обработчика
+
+```javascript
+// Передать с помощью Bind
+onLabelClick() {
+  console.log(`Done: ${this.props.label}`)
+}
+// render
+<span onClick={this.onLabelClick.bind(this)}>{label}</span>
+// .bind(this) каждый раз при вызове render будет создаваться новая функция для передчи this
+```
+
+```javascript
+// С помощью конструктора
+constructor() {
+  super();
+
+  this.onLabelClick = () => {
+    console.log(`Done: ${this.props.label}`)
+  }
+}
+// render
+<span onClick={ this.onLabelClick }>{label}</span>
+```
+
+```javascript
+// Classfields (пока не вошло в стандарт), полностью эквивалентен форме записи с конструктором
+onLabelClick = () => {
+  console.log(`Done: ${this.props.label}`)
+} 
+// `onLabelClick` Сохраняет значение this поскольку это стрелочная функция  
+// render
+<span onClick={ this.onLabelClick }>{label}</span>
+```
+
+## P4.36 State - состояние React компонента
+
+- Состояние хранится в поле `state`
+- `this.state` инициализируется в конструкторе или в теле класса
+- После инициализации `state` нельзя изменять (только читать)
+- Чтобы обновить `state` - `setState()`
