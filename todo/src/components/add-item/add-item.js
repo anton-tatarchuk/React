@@ -14,10 +14,10 @@ export default class AddItem extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-	this.props.onAddItem(this.state.label);
-	this.setState({
-		label: ''
-	})
+    this.props.onAddItem(this.state.label);
+    this.setState({
+      label: "",
+    });
   };
 
   render() {
@@ -28,8 +28,8 @@ export default class AddItem extends Component {
           type="text"
           className="form-control"
           onChange={this.onLabelChange}
-		  placeholder="Wtf do you want"
-		  value={this.state.label}
+          placeholder="Wtf do you want"
+          value={this.state.label}
         />
         <button className="btn btn-outline-dark btn-sm float-right">
           <i className="fa fa-plus" />

@@ -26,13 +26,23 @@ export default class App extends Component {
       important: false,
       done: false,
       id: this.maxId++,
+      visible: true,
     };
   }
 
-  toggleProperty(arr, id, propName) {
+  toggleProperty(arr, id, propName, filter) {
     const idx = arr.findIndex((el) => el.id === id);
     const oldItem = arr[idx];
-    const newItem = { ...oldItem, [propName]: !oldItem[propName] };
+    let newItem;
+    if (filter === "show") {
+      newItem = { ...oldItem, [propName]: true };
+    } 
+    else if (filter === "hide") {
+      newItem = { ...oldItem, [propName]: false };
+    }
+    else {
+      newItem = { ...oldItem, [propName]: !oldItem[propName] };
+    }
 
     return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
   }
@@ -78,19 +88,41 @@ export default class App extends Component {
     });
   };
 
-  filterItems = (filter) => {
-    // let newArr;
-    // if (filter) {
-      // switch (filter) {
-    //     case 'active': newArr = this.state.todoData.filter((el) => el.done);
-    //   }
-      
-    //   console.log(newArr);
-    // } else {
-    //   console.log('test')
-    // }
-    // console.log(filter)
-  }
+  filterAction = (showItems, hideItems) => {
+    showItems.map((e) => {
+      return this.setState(({ todoData }) => {
+        return {
+          todoData: this.toggleProperty(todoData, e.id, "visible", "show"),
+        };
+      });
+    });
+    if (hideItems) {
+      hideItems.map((e) => {
+        return this.setState(({ todoData }) => {
+          return {
+            todoData: this.toggleProperty(todoData, e.id, "visible", "hide"),
+          };
+        });
+      });
+    }
+  };
+
+  onFilterItems = (filter) => {
+    const undoneItems = this.state.todoData.filter((el) => el.done === false);
+    const doneItems = this.state.todoData.filter((el) => el.done === true);
+
+    switch (filter) {
+      case "done":
+        this.filterAction(doneItems, undoneItems);
+        break;
+      case "active":
+        this.filterAction(undoneItems, doneItems);
+        break;
+      default:
+        this.filterAction(this.state.todoData);
+        break;
+    }
+  };
 
   render() {
     const { todoData } = this.state;
@@ -102,7 +134,7 @@ export default class App extends Component {
         <AppHeader toDo={todoCount} done={doneCount} />
         <div className="top-panel d-flex">
           <SearchPanel />
-          <ItemStatusFilter onFilterItems={this.filterItems}/>
+          <ItemStatusFilter onFilterItems={this.onFilterItems} />
         </div>
         <TodoList
           todos={todoData}
