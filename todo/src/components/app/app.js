@@ -124,6 +124,19 @@ export default class App extends Component {
     }
   };
 
+  searchItems = (term) => {
+    if (term.length) {
+      term = term.toLowerCase();
+
+      const undoneItems = this.state.todoData.filter((el) => !el.label.toLowerCase().includes(term));
+      const doneItems = this.state.todoData.filter((el) => el.label.toLowerCase().includes(term));
+      
+      this.filterAction(doneItems, undoneItems);
+    } else {
+      this.filterAction(this.state.todoData);
+    }
+  }
+
   render() {
     const { todoData } = this.state;
     const doneCount = todoData.filter((el) => el.done).length;
@@ -133,7 +146,7 @@ export default class App extends Component {
       <div className="todo-app">
         <AppHeader toDo={todoCount} done={doneCount} />
         <div className="top-panel d-flex">
-          <SearchPanel />
+          <SearchPanel searchItems={this.searchItems}/>
           <ItemStatusFilter onFilterItems={this.onFilterItems} />
         </div>
         <TodoList
