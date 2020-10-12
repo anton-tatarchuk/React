@@ -13,6 +13,15 @@ export default class RandomPlanet extends Component {
         error: false
     };
 
+    componentDidMount() {
+        this.interval = setInterval(this.updatePlanet, 5000);
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.interval)
+        console.log("Unmount Random Planet")
+    }
+
     onPlanetLoaded = (planet) => {
         this.setState({ planet, loading: false });
     };
@@ -24,20 +33,16 @@ export default class RandomPlanet extends Component {
         })
     }
 
-    updatePlanet() {
+    updatePlanet = () => {
         // const id = Math.floor(Math.random()*25 + 2);
-        const id = 9;
+        const id = Math.floor(Math.random()*25)+1;
         this.swapiService
                 .getPlanet(id)
                 .then(this.onPlanetLoaded)
                 .catch(this.onError);
     }
 
-    constructor() {
-        super();
-        this.updatePlanet();
-    }
-
+   
     render() {
         const { planet, loading, error } = this.state;
 

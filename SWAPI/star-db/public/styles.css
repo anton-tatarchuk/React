@@ -21,6 +21,10 @@
 }
 .list-item {
   padding: 10px 20px;
+  cursor: pointer;
+}
+.list-item:hover {
+  background: rgba(255, 255, 255, 0.37);
 }
 .list-item + .list-item {
   border-top: 1px solid rgba(0, 0, 0, 0.6);
@@ -58,4 +62,7 @@
 }
 .error-indicator p {
   color: #ffffff;
+}
+.button-row {
+  margin-bottom: 30px;
 }
