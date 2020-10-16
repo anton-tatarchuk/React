@@ -1,19 +1,17 @@
 import React, { Component } from "react";
-
-import Header from "../header";
-import RandomPlanet from "../random-planet";
-import ItemList from "../item-list";
-import PersonDetails from "../person-details";
-import ErrorIndicator from "../error-indocator";
+import SwapiService from "../../services/swapi-service";
+import ErrorBoundry from "../error-boundry";
 import ErrorButton from "../error-button";
-// import PlanetDetails from "../planet-details";
-// import StarshipDetails from "../starship-details";
+import Header from "../header";
+import ItemPage from "../item-page";
+import RandomPlanet from "../random-planet";
+import { Record } from "../item-details/item-details";
 
 export default class App extends Component {
+    swapiService = new SwapiService();
+
     state = {
-        showRandomPlanet: true,
-        selectedPerson: 2,
-        hasError: false
+        showRandomPlanet: true
     };
 
     togglePlanet = () => {
@@ -23,48 +21,80 @@ export default class App extends Component {
         });
     };
 
-    componentDidCatch(){
-        console.log('catched error')
-        this.setState({
-            hasError: true,
-        });
-    }
-
-    onPersonSelected = (id) => {
-        this.setState({
-            selectedPerson: id,
-        });
-    };
-
     render() {
+        const {
+            getAllPeople,
+            getPerson,
+            getPersonImageUrl,
+            getAllPlanets,
+            getPlanet,
+            getPlanetImageUrl,
+            getAllStarships,
+            getStarship,
+            getStarshipImageUrl,
+        } = this.swapiService;
 
-        if (this.state.hasError){
-            return <ErrorIndicator />
-        }
+        const peoplePage = (
+            <ItemPage
+                getData={getAllPeople}
+                getItemData={getPerson}
+                getImageUrl={getPersonImageUrl}
+                label={({ name, gender }) => `${name} (${gender})`}
+            >
+                <Record label="Gender" field="gender" />
+                <Record label="Birth" field="birthYear" />
+                <Record label="Height" field="height" />
+                <Record label="Eye Color" field="eyeColor" />
+            </ItemPage>
+        );
+
+        const planetPage = (
+            <ItemPage
+                getData={getAllPlanets}
+                getItemData={getPlanet}
+                getImageUrl={getPlanetImageUrl}
+                label={({ name, population }) => `${name} (${population})`}
+            >
+                <Record label="Population" field="population" />
+                <Record label="Rotation Period" field="rotationPeriod" />
+                <Record label="Diameter" field="diameter" />
+            </ItemPage>
+        );
+
+        const starshipPage = (
+            <ItemPage
+                getData={getAllStarships}
+                getItemData={getStarship}
+                getImageUrl={getStarshipImageUrl}
+                label={({ name, model }) => `${name} (${model})`}
+            >
+                <Record label="Model" field="model" />
+                <Record label="Manufacturer" field="manufacturer" />
+                <Record label="Cost" field="costInCredits" />
+                <Record label="Crew" field="crew" />
+            </ItemPage>
+        );
 
         return (
             <div className="app">
-                <Header />
-                {this.state.showRandomPlanet ? <RandomPlanet /> : null}
-                <div className="row mb2 button-row">
-                    <div className="col-md-12">
-                        <button
-                            className="toggle-planet btn btn-warning"
-                            onClick={this.togglePlanet}
-                        >
-                            Toggle Random Planet
-                        </button>
-                        <ErrorButton />
+                <ErrorBoundry>
+                    <Header />
+                    {this.state.showRandomPlanet ? <RandomPlanet /> : null}
+                    <div className="row mb2 button-row">
+                        <div className="col-md-12">
+                            <button
+                                className="toggle-planet btn btn-warning"
+                                onClick={this.togglePlanet}
+                            >
+                                Toggle Random Planet
+                            </button>
+                            <ErrorButton />
+                        </div>
                     </div>
-                </div>
-                <div className="row mb2">
-                    <div className="col-md-6">
-                        <ItemList onItemSelected={this.onPersonSelected} />
-                    </div>
-                    <div className="col-md-6">
-                        <PersonDetails personId={this.state.selectedPerson} />
-                    </div>
-                </div>
+                    {peoplePage}
+                    {planetPage}
+                    {starshipPage}
+                </ErrorBoundry>
             </div>
         );
     }
